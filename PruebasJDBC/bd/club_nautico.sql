@@ -1,0 +1,1 @@
+SELECT * FROM club_nautico.socios;

@@ -67,6 +67,28 @@ public class SociosDAO implements ISociosDAO{
             return socios;
         }
     }
+
+    @Override
+    public int actualizar(Socio socio) {
+        try{
+            Connection conexion = this.conexionBD.crearConexion();
+            Statement comandoSQL = conexion.createStatement();
+            
+            String codigoSQL = String
+                    .format("UPDATE socios SET nombre='%s', telefono='%s' WHERE id_socio=%d",
+                            socio.getNombre(),
+                            socio.getTelefono(),
+                            socio.getId());
+            
+            int registrosAfectados = comandoSQL.executeUpdate(codigoSQL);
+            
+            return registrosAfectados;
+            
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return 0;
+        }
+    }
     
     
 }

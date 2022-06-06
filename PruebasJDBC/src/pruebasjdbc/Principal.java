@@ -26,6 +26,11 @@ public class Principal {
     public static void main(String[] args) {
         IConexionBD conexionBD = new ConexionBD();
         ISociosDAO sociosDAO = new SociosDAO(conexionBD);
+        Socio socio = new Socio(7, "Martin Chavez", "6445868956");
+        sociosDAO.actualizar(socio);
+        
+        
+        
         new SociosForm(sociosDAO).setVisible(true);
         
         

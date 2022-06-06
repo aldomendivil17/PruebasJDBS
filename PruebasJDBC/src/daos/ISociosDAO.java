@@ -10,4 +10,5 @@ import java.util.List;
 public interface ISociosDAO {
     public int agregar(Socio socio);
     public List<Socio> consultarTodos();
+    public int actualizar(Socio socio);
 }

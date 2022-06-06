@@ -6,7 +6,10 @@ package guis;
 
 import daos.ISociosDAO;
 import dominio.Socio;
+import java.util.List;
+import java.util.Objects;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,6 +24,7 @@ public class SociosForm extends javax.swing.JFrame {
     public SociosForm(ISociosDAO sociosDAO) {
         initComponents();
         this.sociosDAO = sociosDAO;
+        this.cargarTablaSocios();
     }
     private void guardar(){
         String nombre = this.txtNombre.getText();
@@ -33,6 +37,7 @@ public class SociosForm extends javax.swing.JFrame {
             if(sociosAgregados == 1){
                 JOptionPane.showMessageDialog(this, "Socio agregados correctamente",
                         "Información", JOptionPane.INFORMATION_MESSAGE);
+                this.cargarTablaSocios();
             } else{
                 JOptionPane.showMessageDialog(this, "No se pudo agregar al socio",
                         "Error", JOptionPane.INFORMATION_MESSAGE);
@@ -61,6 +66,32 @@ public class SociosForm extends javax.swing.JFrame {
         }
         return null;
     }
+    
+    private void cargarTablaSocios(){
+        List<Socio> socios = this.sociosDAO.consultarTodos();
+        DefaultTableModel modelo = (DefaultTableModel)this.tblSocios.getModel();
+        modelo.setRowCount(0);
+        for(Socio socio: socios){
+            Object[] fila = new Object[3];
+            fila[0] = socio.getId();
+            fila[1] = socio.getNombre();
+            fila[2] = socio.getTelefono();
+            modelo.addRow(fila);
+        }
+    }
+    
+    private void verDetalles(){
+        int indiceFilaSeleccionada = this.tblSocios.getSelectedRow();
+        int indiceColumnaId = 0;
+        if(indiceFilaSeleccionada == -1){
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un socio",
+                    "Información", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        DefaultTableModel modelo = (DefaultTableModel)this.tblSocios.getModel();
+        long idSocio = (Long)modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
+        System.out.printf("Id Socio Seleccionado: %s %n",idSocio);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -79,6 +110,9 @@ public class SociosForm extends javax.swing.JFrame {
         txtTelefono = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        pnlTablaSocios = new javax.swing.JScrollPane();
+        tblSocios = new javax.swing.JTable();
+        btnVerDetalles = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Administración de Socios");
@@ -106,6 +140,38 @@ public class SociosForm extends javax.swing.JFrame {
             }
         });
 
+        tblSocios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "id_Socio", "nombre", "telefono"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Long.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        pnlTablaSocios.setViewportView(tblSocios);
+
+        btnVerDetalles.setText("Ver detalles");
+        btnVerDetalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerDetallesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -128,31 +194,43 @@ public class SociosForm extends javax.swing.JFrame {
                         .addComponent(btnGuardar)
                         .addGap(58, 58, 58)
                         .addComponent(btnCancelar)))
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addGap(88, 88, 88)
+                .addComponent(pnlTablaSocios, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnVerDetalles)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(73, 73, 73)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblIDSocio)
-                    .addComponent(txtIDSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNombre)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTelefono)
-                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(80, 80, 80)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGuardar)
-                    .addComponent(btnCancelar))
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblIDSocio)
+                            .addComponent(txtIDSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblNombre)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(42, 42, 42)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblTelefono)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(80, 80, 80)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnGuardar)
+                            .addComponent(btnCancelar)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnVerDetalles)
+                            .addComponent(pnlTablaSocios, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -164,12 +242,19 @@ public class SociosForm extends javax.swing.JFrame {
         guardar();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
+    private void btnVerDetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerDetallesActionPerformed
+        verDetalles();
+    }//GEN-LAST:event_btnVerDetallesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnVerDetalles;
     private javax.swing.JLabel lblIDSocio;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblTelefono;
+    private javax.swing.JScrollPane pnlTablaSocios;
+    private javax.swing.JTable tblSocios;
     private javax.swing.JTextField txtIDSocio;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtTelefono;

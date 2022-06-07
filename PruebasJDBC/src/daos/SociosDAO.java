@@ -111,9 +111,32 @@ public class SociosDAO implements ISociosDAO{
     }
 
     @Override
-    public int consultarSocio() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Socio consultarSocio(Socio socio) {
+        Socio socioEncontrado = null;
+        try{
+            Connection conexion = this.conexionBD.crearConexion();
+            Statement comandoSQL = conexion.createStatement();
+            
+            String codigoSQL = String
+                    .format("SELECT * FROM socios WHERE id_socio=%d",
+                            socio.getId());
+            
+            ResultSet resultado = comandoSQL.executeQuery(codigoSQL);
+            
+            if(resultado.next()){
+                Long idSocio = resultado.getLong("id_socio");
+                String nombre = resultado.getString("nombre");
+                String telefono = resultado.getString("telefono");
+                socioEncontrado = new Socio(idSocio, nombre, telefono);
+                
+            }
+            return socioEncontrado;
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return null;
+        }
     }
+    
     
     
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
+import javax.swing.JTextField;
 /**
  *
  * @author lv1822
@@ -18,6 +18,8 @@ import javax.swing.table.DefaultTableModel;
 public class SociosForm extends javax.swing.JFrame {
 
     private final ISociosDAO sociosDAO;
+    
+    
     /**
      * Creates new form SociosForm
      */
@@ -90,7 +92,18 @@ public class SociosForm extends javax.swing.JFrame {
         }
         DefaultTableModel modelo = (DefaultTableModel)this.tblSocios.getModel();
         long idSocio = (Long)modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
-        System.out.printf("Id Socio Seleccionado: %s %n",idSocio);
+        
+        Socio socio = new Socio(idSocio);
+        
+        Socio socioEncontrado = this.sociosDAO.consultarSocio(socio);
+//        System.out.println(socioEncontrado.getId()+" "+socioEncontrado.getNombre());
+        String id = Long.toString(socioEncontrado.getId());
+        JTextField idAgregar = (JTextField)this.txtIDSocio;
+        idAgregar.setText(id);
+        JTextField nombre = (JTextField)this.txtNombre;
+        nombre.setText(socioEncontrado.getNombre());
+        JTextField telefono = (JTextField)this.txtTelefono;
+        telefono.setText(socioEncontrado.getTelefono());
     }
     
     private void eliminar(){
@@ -148,6 +161,8 @@ public class SociosForm extends javax.swing.JFrame {
 
         lblTelefono.setFont(new java.awt.Font("Segoe UI Semibold", 1, 12)); // NOI18N
         lblTelefono.setText("Telefono :");
+
+        txtIDSocio.setEditable(false);
 
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {

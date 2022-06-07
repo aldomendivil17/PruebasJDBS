@@ -28,26 +28,15 @@ public class Principal {
         ISociosDAO sociosDAO = new SociosDAO(conexionBD);
         Socio socio = new Socio(7, "Martin Chavez", "6445868956");
         sociosDAO.actualizar(socio);
-        
-        
-        
+
         new SociosForm(sociosDAO).setVisible(true);
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
 //        List<Socio> socios = sociosDAO.consultarTodos();
 //        for(Socio socio: socios){
 //            System.out.println(socio);
 //        }
 //        
 //        
-        
 //        Socio socio = new Socio("Jesus Miranda","6442527845");
 //        int registrosAfectados = sociosDAO.agregar(socio);
 //        
@@ -56,8 +45,6 @@ public class Principal {
 //        } else{
 //            System.out.println("No se agregó el socio");
 //        }
-        
-        
     }
-    
+
 }

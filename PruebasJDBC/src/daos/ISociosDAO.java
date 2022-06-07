@@ -12,5 +12,5 @@ public interface ISociosDAO {
     public List<Socio> consultarTodos();
     public int actualizar(Socio socio);
     public int eliminar(Socio socio);
-    public int consultarSocio();
+    public Socio consultarSocio(Socio socio);
 }

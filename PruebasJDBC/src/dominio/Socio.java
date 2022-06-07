@@ -12,6 +12,9 @@ public class Socio {
     public Socio(){
         
     }
+    public Socio(long id){
+        this.id=id;
+    }
     public Socio(long id, String nombre, String telefono) {
         this.id = id;
         this.nombre = nombre;

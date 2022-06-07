@@ -92,6 +92,28 @@ public class SociosForm extends javax.swing.JFrame {
         long idSocio = (Long)modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
         System.out.printf("Id Socio Seleccionado: %s %n",idSocio);
     }
+    
+    private void eliminar(){
+        int indiceFilaSeleccionada = this.tblSocios.getSelectedRow();
+        int indiceColumnaId = 0;
+        if(indiceFilaSeleccionada == -1){
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un socio",
+                    "Información", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        DefaultTableModel modelo = (DefaultTableModel)this.tblSocios.getModel();
+        long idSocio = (Long)modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
+        Socio socio = new Socio(idSocio);
+        int socioEliminado = this.sociosDAO.eliminar(socio);
+        if(socioEliminado == 1){
+                JOptionPane.showMessageDialog(this, "Socio eliminado correctamente",
+                        "Información", JOptionPane.INFORMATION_MESSAGE);
+                this.cargarTablaSocios();
+            } else{
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar al socio",
+                        "Error", JOptionPane.INFORMATION_MESSAGE);
+            }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -113,6 +135,7 @@ public class SociosForm extends javax.swing.JFrame {
         pnlTablaSocios = new javax.swing.JScrollPane();
         tblSocios = new javax.swing.JTable();
         btnVerDetalles = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Administración de Socios");
@@ -172,6 +195,13 @@ public class SociosForm extends javax.swing.JFrame {
             }
         });
 
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -197,7 +227,9 @@ public class SociosForm extends javax.swing.JFrame {
                 .addGap(88, 88, 88)
                 .addComponent(pnlTablaSocios, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnVerDetalles)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnVerDetalles, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -224,7 +256,10 @@ public class SociosForm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnVerDetalles)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnVerDetalles)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar))
                             .addComponent(pnlTablaSocios, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(78, Short.MAX_VALUE))
         );
@@ -246,8 +281,13 @@ public class SociosForm extends javax.swing.JFrame {
         verDetalles();
     }//GEN-LAST:event_btnVerDetallesActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        eliminar();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnVerDetalles;
     private javax.swing.JLabel lblIDSocio;

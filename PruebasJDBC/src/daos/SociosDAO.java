@@ -89,6 +89,31 @@ public class SociosDAO implements ISociosDAO{
             return 0;
         }
     }
+
+    @Override
+    public int eliminar(Socio socio) {
+        try{
+            Connection conexion = this.conexionBD.crearConexion();
+            Statement comandoSQL = conexion.createStatement();
+            
+            String codigoSQL = String
+                    .format("DELETE FROM socios WHERE id_socio=%d",
+                            socio.getId());
+            
+            int registrosAfectados = comandoSQL.executeUpdate(codigoSQL);
+            
+            return registrosAfectados;
+            
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return 0;
+        }
+    }
+
+    @Override
+    public int consultarSocio() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
 }

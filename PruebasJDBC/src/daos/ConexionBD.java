@@ -12,7 +12,7 @@ public class ConexionBD implements IConexionBD {
 
     private final String CADENA_CONEXION = "jdbc:mysql://localhost/club_nautico";
     private final String USUARIO = "root";
-    private final String PASSWORD = "itson";
+    private final String PASSWORD = "123456";
 
     @Override
     public Connection crearConexion() throws SQLException {
